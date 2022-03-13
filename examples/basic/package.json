@@ -1,0 +1,22 @@
+{
+  "name": "basic",
+  "private": true,
+  "scripts": {
+    "build": "vite-ssr build",
+    "dev": "vite-ssr --port 3333",
+    "serve": "cross-env NODE_ENV=production vite-ssr"
+  },
+  "dependencies": {
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.2.4",
+    "cross-env": "^7.0.3",
+    "typescript": "^4.6.2",
+    "unplugin-vue-components": "^0.17.21",
+    "vite": "^2.8.6",
+    "vite-plugin-pages": "^0.21.4",
+    "vite-ssr-vue3": "workspace:^0.0.1",
+    "vue-router": "^4.0.13"
+  }
+}
