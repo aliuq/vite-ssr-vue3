@@ -1,5 +1,7 @@
 # Vite-SSR-Vue3
 
+![version](https://img.shields.io/npm/v/vite-ssr-vue3)
+
 Vite plugin for vue Server-Side Rendering, Used express to create a server.
 
 ## Usage
