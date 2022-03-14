@@ -16,7 +16,7 @@
     "unplugin-vue-components": "^0.17.21",
     "vite": "^2.8.6",
     "vite-plugin-pages": "^0.21.4",
-    "vite-ssr-vue3": "workspace:^0.0.1",
+    "vite-ssr-vue3": "workspace:latest",
     "vue-router": "^4.0.13"
   }
 }
