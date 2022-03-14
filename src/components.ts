@@ -1,6 +1,7 @@
 import type { App } from 'vue'
 import { defineComponent, inject, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import type { ViteSSRContext } from './types'
 
 export const ClientOnly = defineComponent({
   name: 'ClientOnly',
@@ -15,12 +16,12 @@ export const ClientOnly = defineComponent({
 })
 
 const CONTEXT_SYMBOL = Symbol('unique-context-symbol')
-export function provideContext(app: App, context: any) {
+export function provideContext(app: App, context: ViteSSRContext) {
   app.provide(CONTEXT_SYMBOL, context)
 }
 
 export function useContext() {
-  return inject(CONTEXT_SYMBOL) as any
+  return inject(CONTEXT_SYMBOL) as ViteSSRContext
 }
 
 export async function useFetch(key: string, fn: () => Promise<any>) {
