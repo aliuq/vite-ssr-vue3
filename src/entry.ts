@@ -8,6 +8,7 @@ import { documentReady } from './utils/document-ready'
 import { deserializeState } from './utils/state'
 
 export { ClientOnly, useContext, useFetch } from './components'
+export * from './types'
 
 export function ViteSSR(
   App: Component,
