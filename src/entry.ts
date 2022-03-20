@@ -1,26 +1,27 @@
 import type { Component } from 'vue'
 import { createApp as createClientApp, createSSRApp } from 'vue'
 import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
-import { renderToString } from 'vue/server-renderer'
 import { provideContext } from './components'
 import type { RouterOptions, ViteSSRClientOptions, ViteSSRContext } from './types'
 import { documentReady } from './utils/document-ready'
 import { deserializeState } from './utils/state'
+import { generateRenderFn } from './node/render'
 
 export { ClientOnly, useContext, useFetch } from './components'
 export * from './types'
 
 export function ViteSSR(
   App: Component,
-  routerOptions: RouterOptions,
+  routerOptions: RouterOptions = { base: '/', routes: [] },
   fn?: (context: ViteSSRContext<true>) => Promise<void> | void,
   options: ViteSSRClientOptions = {},
 ) {
   const { transformState, rootContainer = '#app' } = options
   const isClient = typeof window !== 'undefined'
 
+  // client - true is client side, false is server side
   async function createApp(client = false, routePath?: string) {
-    const app = client ? createSSRApp(App) : createClientApp(App)
+    const app = client ? createClientApp(App) : createSSRApp(App)
 
     const router = createRouter({
       history: client ? createWebHistory(routerOptions.base) : createMemoryHistory(routerOptions.base),
@@ -37,9 +38,10 @@ export function ViteSSR(
       redirect: router.replace,
       initialState: {},
       transformState,
-      serverRender: undefined,
-      cache: new Map(),
       routePath,
+      render: undefined,
+      onBeforePageRender: undefined,
+      onPageRender: undefined,
     }
 
     if (client) {
@@ -66,24 +68,13 @@ export function ViteSSR(
 
       next()
     })
-
     if (!client) {
       const route = context.routePath ?? routerOptions.base ?? '/'
       router.push(route)
 
       await router.isReady()
       context.initialState = router.currentRoute.value.meta.state as Record<string, any> || {}
-
-      context.serverRender = async(url: string, manifest: any) => {
-        await router.push(url)
-        await router.isReady()
-
-        const ctx: any = {}
-        const html = await renderToString(app, ctx)
-        const preloadLinks = await renderPreloadLinks(ctx.modules, manifest)
-
-        return [html, preloadLinks]
-      }
+      context.render = generateRenderFn(app, router) as typeof context.render
     }
 
     const initialState = context.initialState
@@ -101,57 +92,4 @@ export function ViteSSR(
   }
 
   return createApp
-}
-
-async function renderPreloadLinks(modules: any, manifest: any) {
-  let links = ''
-  const seen = new Set()
-  const { basename } = await import('path')
-  modules.forEach((id: any) => {
-    const files = manifest[id]
-    if (files) {
-      files.forEach((file: any) => {
-        if (!seen.has(file)) {
-          seen.add(file)
-          const filename = basename(file)
-          if (manifest[filename]) {
-            for (const depFile of manifest[filename]) {
-              links += renderPreloadLink(depFile)
-              seen.add(depFile)
-            }
-          }
-          links += renderPreloadLink(file)
-        }
-      })
-    }
-  })
-  return links
-}
-
-function renderPreloadLink(file: string) {
-  if (file.endsWith('.js')) {
-    return `<link rel="modulepreload" crossorigin href="${file}">`
-  }
-  else if (file.endsWith('.css')) {
-    return `<link rel="stylesheet" href="${file}">`
-  }
-  else if (file.endsWith('.woff')) {
-    return ` <link rel="preload" href="${file}" as="font" type="font/woff" crossorigin>`
-  }
-  else if (file.endsWith('.woff2')) {
-    return ` <link rel="preload" href="${file}" as="font" type="font/woff2" crossorigin>`
-  }
-  else if (file.endsWith('.gif')) {
-    return ` <link rel="preload" href="${file}" as="image" type="image/gif">`
-  }
-  else if (file.endsWith('.jpg') || file.endsWith('.jpeg')) {
-    return ` <link rel="preload" href="${file}" as="image" type="image/jpeg">`
-  }
-  else if (file.endsWith('.png')) {
-    return ` <link rel="preload" href="${file}" as="image" type="image/png">`
-  }
-  else {
-    // TODO
-    return ''
-  }
 }

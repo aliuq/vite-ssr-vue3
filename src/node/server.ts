@@ -6,7 +6,7 @@ import { bold, cyan } from 'kolorist'
 import fs from 'fs-extra'
 import express from 'express'
 import { getConfig, getEntry, getIndexTemplate } from '../config'
-import type { ViteSSROptions } from '../types'
+import type { ViteSSRContext, ViteSSROptions } from '../types'
 import { serializeState } from '../utils/state'
 
 const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD
@@ -74,16 +74,27 @@ export async function createSSRServer(cliOptions: ViteSSROptions) {
         template = await getIndexTemplate()
         template = await vite.transformIndexHtml(url, template)
       }
+      const appCtx: ViteSSRContext = await createApp()
+      const { render, transformState = serializeState, initialState, onBeforePageRender, onPageRender } = appCtx
+      await onBeforePageRender?.(appCtx)
+      let { appHtml, preloadLinks } = await render?.(url, manifest) as any
 
-      const { serverRender: render, transformState = serializeState, initialState } = await createApp()
-      const [appHtml, preloadLinks] = await render(url, manifest)
+      // Hook `onPageRender`
+      const { appHtml: _appHtml, preloadLinks: _preloadLinks } = (await onPageRender?.({
+        route: url,
+        appHtml,
+        preloadLinks,
+        appCtx,
+      })) || {}
+      appHtml = _appHtml || appHtml
+      preloadLinks = _preloadLinks || preloadLinks
 
       const state = transformState(initialState)
       const stateScript = state
         ? `\n\t<script>window.__INITIAL_STATE__=${state}</script>`
         : ''
       let html = template
-        .replace('</title>', `</title>${preloadLinks}`)
+        .replace('</title>', `</title>\n${preloadLinks}`)
         .replace(container, `<div id="${ssrOptions.rootContainerId}">${appHtml}</div>${stateScript}`)
 
       // @ts-expect-error global variable
