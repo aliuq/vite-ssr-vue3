@@ -1,0 +1,25 @@
+{
+  "name": "naive-ui",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite-ssr --port 3000",
+    "build": "vite-ssr build",
+    "serve": "cross-env NODE_ENV=production vite-ssr"
+  },
+  "dependencies": {
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.13"
+  },
+  "devDependencies": {
+    "@css-render/vue3-ssr": "^0.15.9",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "cross-env": "^7.0.3",
+    "naive-ui": "^2.26.4",
+    "typescript": "^4.5.4",
+    "unplugin-vue-components": "^0.17.21",
+    "vite": "^2.8.0",
+    "vite-ssr-vue3": "workspace:^0.0.4",
+    "vue-tsc": "^0.29.8"
+  }
+}

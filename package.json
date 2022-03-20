@@ -25,6 +25,7 @@
     "dev": "tsup --watch src",
     "build": "unbuild",
     "example:dev": "tsup && concurrently --kill-others -c 'cyan.bold,yellow.bold' -n 'SSR,Basic' \"pnpm dev\" \"pnpm -F basic dev\"",
+    "naiveui:dev": "tsup && concurrently --kill-others -c 'cyan.bold,yellow.bold' -n 'SSR,Naive UI' \"pnpm dev\" \"pnpm -F naiveui dev\"",
     "lint": "eslint --ext .ts,.js .",
     "lint:fix": "eslint --fix --ext .ts,.js .",
     "prepublishOnly": "npm run build",
