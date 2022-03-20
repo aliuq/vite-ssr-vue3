@@ -24,7 +24,8 @@
   "scripts": {
     "dev": "tsup --watch src",
     "build": "unbuild",
-    "example:dev": "tsup && concurrently --kill-others -c 'cyan.bold,yellow.bold' -n 'SSR,Basic' \"pnpm dev\" \"pnpm -F basic dev\"",
+    "basic:dev": "tsup && concurrently --kill-others -c 'cyan.bold,yellow.bold' -n 'SSR,Basic' \"pnpm dev\" \"pnpm -F basic dev\"",
+    "basic:serve": "pnpm build & pnpm -F basic build & pnpm -F basic serve",
     "naive-ui:dev": "tsup && concurrently --kill-others -c 'cyan.bold,yellow.bold' -n 'SSR,Naive-UI' \"pnpm dev\" \"pnpm -F naive-ui dev\"",
     "naive-ui:serve": "pnpm build & pnpm -F naive-ui build & pnpm -F naive-ui serve",
     "lint": "eslint --ext .ts,.js .",
