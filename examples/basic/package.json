@@ -4,14 +4,13 @@
   "scripts": {
     "build": "vite-ssr build",
     "dev": "vite-ssr --port 3333",
-    "serve": "cross-env NODE_ENV=production vite-ssr"
+    "serve": "vite-ssr --mode production"
   },
   "dependencies": {
     "vue": "^3.2.31"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.2.4",
-    "cross-env": "^7.0.3",
     "typescript": "^4.6.2",
     "unplugin-vue-components": "^0.17.21",
     "vite": "^2.8.6",
