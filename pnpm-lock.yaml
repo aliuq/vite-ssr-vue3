@@ -72,20 +72,26 @@ importers:
       vite-ssr-vue3: link:../..
       vue-router: 4.0.14_vue@3.2.31
 
-  examples/naiveui:
+  examples/naive-ui:
     specifiers:
+      '@css-render/vue3-ssr': ^0.15.9
       '@vitejs/plugin-vue': ^2.2.0
+      cross-env: ^7.0.3
       naive-ui: ^2.26.4
       typescript: ^4.5.4
       unplugin-vue-components: ^0.17.21
       vite: ^2.8.0
-      vite-ssr-vue3: workspace:^0.0.4
+      vite-ssr-vue3: workspace:*
       vue: ^3.2.25
+      vue-router: ^4.0.13
       vue-tsc: ^0.29.8
     dependencies:
       vue: 3.2.31
+      vue-router: 4.0.14_vue@3.2.31
     devDependencies:
+      '@css-render/vue3-ssr': 0.15.9_vue@3.2.31
       '@vitejs/plugin-vue': 2.2.4_vite@2.8.6+vue@3.2.31
+      cross-env: 7.0.3
       naive-ui: 2.26.4_vue@3.2.31
       typescript: 4.6.2
       unplugin-vue-components: 0.17.21_b92d6fb20f37814195eca07baa4c1fc8
@@ -763,7 +769,6 @@ packages:
 
   /@vue/devtools-api/6.1.0:
     resolution: {integrity: sha512-1FtbxEEHN70WGJl1b/h8nLmyN+tOHONNsNLvgVEXF/L/vBrRqQZ0kF+dev1YAz3OtxsQ1sV/vPLKwRlq1axrgg==}
-    dev: true
 
   /@vue/reactivity-transform/3.2.31:
     resolution: {integrity: sha512-uS4l4z/W7wXdI+Va5pgVxBJ345wyGFKvpPYtdSgvfJfX/x2Ymm6ophQlXXB6acqGHtXuBqNyyO3zVp9b1r0MOA==}
@@ -4640,7 +4645,6 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.1.0
       vue: 3.2.31
-    dev: true
 
   /vue-tsc/0.29.8_typescript@4.6.2:
     resolution: {integrity: sha512-pT0wLRjvRuSmB+J4WJT6uuV9mO0KtSSXEAtaVXZQzyk5+DJdbLIQTbRce/TXSkfqt1l1WogO78RjtOJFiMCgfQ==}
