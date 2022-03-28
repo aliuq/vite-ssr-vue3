@@ -13,8 +13,9 @@ const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD
 
 export async function createSSRServer(cliOptions: ViteSSROptions) {
   const { ssrOptions, resolve } = await getConfig()
-  const { useViteMiddleware, rootContainerId }: ViteSSROptions = Object.assign({}, ssrOptions, cliOptions)
-  const isProd = process.env.NODE_ENV === 'production'
+  const { useViteMiddleware, rootContainerId, mode }: ViteSSROptions = Object.assign({}, ssrOptions, cliOptions)
+
+  const isProd = (process.env.MODE || process.env.NODE_ENV || mode) === 'production'
 
   const app = express()
 

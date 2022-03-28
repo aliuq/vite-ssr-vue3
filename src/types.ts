@@ -29,6 +29,13 @@ export interface ViteSSROptions {
    * @default process.env.NODE_ENV !== 'production'
    */
   useViteMiddleware?: boolean
+  /**
+   * The mode of the project
+   *
+   * @default vite.config.mode
+   * @see https://cn.vitejs.dev/config/#mode
+   */
+  mode?: 'development' | 'production'
 }
 
 interface RenderHtml {

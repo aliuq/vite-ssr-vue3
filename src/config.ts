@@ -15,6 +15,7 @@ export async function getConfig(mode: string | undefined = process.env.NODE_ENV)
     entry: 'src/main',
     rootContainerId: 'app',
     useViteMiddleware: process.env.NODE_ENV !== 'production',
+    mode: __CONFIG__.mode,
   }, __CONFIG__?.ssrOptions || {})
 
   const join = (dir: string) => _join(__CONFIG__.root, dir)
