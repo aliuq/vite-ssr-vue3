@@ -19,7 +19,7 @@ yargs(hideBin(process.argv))
   )
   .command(
     '*',
-    'development and production enviroment',
+    'development and production environment',
     args => args,
     async(args) => {
       await start(args)
