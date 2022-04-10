@@ -1,0 +1,19 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html.dark {
+  background: #121212;
+}
+
+
+button.n-button {
+  color: var(--n-text-color);
+  background-color: var(--n-color);
+  border-radius: var(--n-border-radius);
+  font-weight: var(--n-font-weight);
+}
