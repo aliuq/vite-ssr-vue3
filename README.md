@@ -6,7 +6,56 @@ Vite plugin for vue Server-Side Rendering, Used express to create a server.
 
 ## Usage
 
+### Install
+
+```bash
+# npm
+npm install -D vite-ssr-vue3 vue-router
+
+# yarn
+yarn add -D vite-ssr-vue3 vue-router
+
+# pnpm
+pnpm add -D vite-ssr-vue3 vue-router
+
+# pnpm workspaces
+pnpm add -D vite-ssr-vue3 vue-router -F <Repo Name> 
+```
+
+Modify `package.json` scripts to:
+
+```diff
+{
+  "scripts": {
+-   "dev": "vite --port 3333",
++   "dev": "vite-ssr --port 3333",
+-   "build": "vite build",
++   "build": "vite-ssr build",
++   "serve": "vite-ssr --mode production"
+  },
+}
+```
+
 ```ts
+// src/main.ts
+import { ViteSSR } from 'vite-ssr-vue3'
+import routes from './routes'
+import App from './App.vue'
+
+// Export `createApp` function is required by vite-ssr
+export const createApp = ViteSSR(App, { routes }, (context) => {
+  // if (import.meta.env.SSR) {
+  //   // Running in server
+  // } else {
+  //   // Running in browser
+  // }
+})
+```
+
+### Initial State
+
+```ts
+// src/main.ts
 import { ViteSSR } from 'vite-ssr-vue3'
 import routes from './routes'
 import App from './App.vue'
@@ -14,22 +63,14 @@ import App from './App.vue'
 export const createApp = ViteSSR(App, { routes }, (context) => {
   const { app, initialState } = context
 
-  // if (import.meta.env.SSR) {
-  //   // Running in server
-  // } else {
-  //   // Running in browser
-  // }
-
   // Use pinia to store your data
   const pinia = createPinia()
 
   if (import.meta.env.SSR)
     initialState.pinia = pinia.state.value
-
   else
     pinia.state.value = initialState.pinia
 
-  // do something
 })
 ```
 
@@ -40,15 +81,6 @@ import { useFetch } from 'vite-ssr-vue3'
 
 const counts = await useFetch('counts', () => Promise.resolve([1, 2, 3]))
 ```
-
-## Development
-
-There are some examples in the **example** directory, you can execute the **package.json** script to start developing source with the sample.
-
-First, you should install the dependencies with command `pnpm install`, then run the `pnpm basic:dev` command to start developing, run `pnpm basic:serve` to view production environment effects.
-
-+ `example/basic`: Basic usage with data fetching example
-+ `example/naive-ui`: Naive UI example
 
 ## Thanks
 
