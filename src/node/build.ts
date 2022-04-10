@@ -19,6 +19,8 @@ export async function build(cliOptions: CliOptions = {}) {
   const outDir = config.build.outDir || 'dist'
   const out = isAbsolute(outDir) ? outDir : join(root, outDir)
 
+  const { input } = Object.assign({}, config.ssrOptions || {}, cliOptions)
+
   buildLog('Build for client...')
   await viteBuild({
     build: {
