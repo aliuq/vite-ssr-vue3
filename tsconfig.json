@@ -1,24 +1,22 @@
 {
-	"compilerOptions": {
-		"module": "ESNext",
-		"target": "es2020",
-		"lib": [
-			"ESNext",
-			"DOM"
-		],
-		"esModuleInterop": true,
-		"strict": true,
-		"strictNullChecks": true,
-		"moduleResolution": "Node",
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-    "declaration": true,
-    "declarationDir": "."
-	},
-	"exclude": [
-		"**/dist",
-		"**/node_modules",
-		"**/test",
-		"**/examples"
-	]
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "es2020",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "jsx": "preserve"
+  },
+  "exclude": [
+    "**/dist",
+    "**/node_modules",
+    "**/test"
+  ]
 }
