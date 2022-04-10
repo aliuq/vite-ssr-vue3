@@ -1,12 +1,10 @@
 import type { Component } from 'vue'
 import { createApp as createClientApp, createSSRApp } from 'vue'
 import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
-import { provideContext } from './components'
 import type { RouterOptions, ViteSSRClientOptions, ViteSSRContext } from './types'
+import { provideContext } from './components'
 import { documentReady } from './utils/document-ready'
 import { deserializeState } from './utils/state'
-import { generateRenderFn } from './node/render'
-
 export { ClientOnly, useContext, useFetch } from './components'
 export * from './types'
 
@@ -15,11 +13,11 @@ export function ViteSSR(
   routerOptions: RouterOptions = { base: '/', routes: [] },
   fn?: (context: ViteSSRContext<true>) => Promise<void> | void,
   options: ViteSSRClientOptions = {},
-) {
+): (client: boolean, routePath?: string) => Promise<ViteSSRContext> {
   const { transformState, rootContainer = '#app' } = options
   const isClient = typeof window !== 'undefined'
 
-  // client - true is client side, false is server side
+  // client - `true` is client side, `false` is server side
   async function createApp(client = false, routePath?: string) {
     const app = client ? createClientApp(App) : createSSRApp(App)
 
@@ -74,7 +72,7 @@ export function ViteSSR(
 
       await router.isReady()
       context.initialState = router.currentRoute.value.meta.state as Record<string, any> || {}
-      context.render = generateRenderFn(app, router) as typeof context.render
+      // context.render = createRender(app, context) as any
     }
 
     const initialState = context.initialState

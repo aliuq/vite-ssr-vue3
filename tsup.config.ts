@@ -1,10 +1,11 @@
 import type { Options } from 'tsup'
 
 export default <Options><unknown>{
-  entryPoints: [
-    'src/index.ts',
-    'src/node/cli.ts',
-  ],
+  entryPoints: {
+    'index': 'src/index.ts',
+    'express': 'src/server/express.ts',
+    'node/cli': 'src/node/cli.ts',
+  },
   dts: true,
   target: 'node14',
   format: [
@@ -13,6 +14,7 @@ export default <Options><unknown>{
   ],
   external: [
     'vue',
+    'vite',
     'vue/server-renderer',
     'vue/compiler-sfc',
   ],

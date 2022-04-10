@@ -1,25 +1,109 @@
-import type { App } from 'vue'
-import type { Router } from 'vue-router'
+import path from 'path'
+import fs from 'fs-extra'
 import { renderToString } from 'vue/server-renderer'
+import { serializeState } from '../utils/state'
+import type { CreateRenderOptions, RenderOptions, ViteSSROptions } from '../types'
 
-export function generateRenderFn(app: App, router: Router) {
-  return async(url: string, manifest: any) => {
+/**
+ * Create a render function environment to avoid regenerate variables in request.
+ * it will returns a render function for every request.
+ *
+ * @returns a render function
+ */
+export async function createRender({
+  isProd = false,
+  root = process.cwd(),
+  outDir = 'dist',
+  context: _context,
+  viteServer,
+  ssrOptions = {},
+}: CreateRenderOptions) {
+  const out = path.isAbsolute(outDir) ? outDir : path.join(root, outDir)
+  const resolve = (dir: string) => path.resolve((isProd ? out : root) as string, dir)
+  const templatePath = resolve(isProd ? './client/index.html' : 'index.html')
+
+  const getTemplate = () => {
+    return fs.existsSync(templatePath)
+      ? fs.readFileSync(templatePath, 'utf-8')
+      : getDefaultTemplate(ssrOptions as ViteSSROptions)
+  }
+  const _template = getTemplate()
+  const manifest = isProd
+    ? (await fs.readJSON(resolve('./client/ssr-manifest.json')), 'utf-8')
+    : {}
+
+  // Polyfill window.fetch
+  if (!globalThis.fetch) {
+    const fetch = await import('node-fetch')
+    // @ts-expect-error global variable
+    globalThis.fetch = fetch.default || fetch
+  }
+
+  const render = async(url: string, opts?: RenderOptions) => {
+    const context = _context || opts?.context
+    if (!context)
+      throw new Error('context is required')
+
+    const {
+      router,
+      transformState = serializeState,
+      initialState,
+      onBeforePageRender,
+      onPageRender,
+      app,
+    } = context
+
     await router.push(url)
     await router.isReady()
 
-    const ctx: any = {}
-    const html = await renderToString(app, ctx)
-    const preloadLinks = await renderPreloadLinks(ctx.modules, manifest)
+    // Before page render hook
+    await onBeforePageRender?.(context)
 
-    return { appHtml: html, preloadLinks }
+    const ctx: any = {}
+    let appHtml = await renderToString(app, ctx)
+
+    let preloadLinks = await renderPreloadLinks(ctx.modules, manifest)
+
+    let template = _template
+    if (!isProd) {
+      template = getTemplate()
+      template = (await viteServer?.transformIndexHtml(url, template)) as string
+    }
+
+    // After page render hook
+    const pageRenderResult = await onPageRender?.({
+      route: url,
+      appCtx: context,
+      appHtml,
+      preloadLinks,
+    })
+    appHtml = pageRenderResult?.appHtml || appHtml
+    preloadLinks = pageRenderResult?.preloadLinks || preloadLinks
+
+    const state = transformState(initialState)
+    const stateScript = state
+      ? `\n\t<script>window.__INITIAL_STATE__=${state}</script>`
+      : ''
+
+    const html = template
+      .replace('</title>', `</title>\n${preloadLinks}`)
+      .replace(
+        '<div id="app"></div>',
+        `<div id="app">${appHtml}</div>${stateScript}`,
+      )
+
+    return html
   }
+
+  return render
 }
 
 export async function renderPreloadLinks(modules: any, manifest: any) {
   let links = ''
   const seen = new Set()
   const { basename } = await import('path')
-  modules.forEach((id: any) => {
+
+  modules && modules.forEach((id: any) => {
     const files = manifest[id]
     if (files) {
       files.forEach((file: any) => {
@@ -66,4 +150,30 @@ function renderPreloadLink(file: string) {
     // TODO
     return ''
   }
+}
+
+function getDefaultTemplate(ssrOptions: ViteSSROptions) {
+  const { rootContainerId = 'app', entry = 'src/main.ts' } = ssrOptions
+  const template = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Vite SSR</title>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="${rootContainerId}"></div>
+        <script type="module" src="${entry}"></script>
+      </body>
+    </html>
+  `
+  return template
 }

@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { isAbsolute, join } from 'path'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { build as viteBuild } from 'vite'
-import { getConfig, getEntry } from '../config'
+import { getEntryPoint, resolveViteConfig } from '../config'
 import { buildLog } from './utils'
 
 export interface CliOptions {
@@ -11,16 +12,13 @@ export interface CliOptions {
 
 export async function build(cliOptions: CliOptions = {}) {
   const mode = process.env.MODE || process.env.NODE_ENV || cliOptions.mode || 'production'
-  const { config, ssrOptions } = await getConfig(mode)
+  const config: ResolvedConfig = await resolveViteConfig(mode)
 
   const cwd = process.cwd()
   const root = config.root || cwd
   const outDir = config.build.outDir || 'dist'
   const out = isAbsolute(outDir) ? outDir : join(root, outDir)
 
-  const { format = 'cjs' } = Object.assign({}, ssrOptions || {}, cliOptions)
-
-  // client
   buildLog('Build for client...')
   await viteBuild({
     build: {
@@ -28,32 +26,27 @@ export async function build(cliOptions: CliOptions = {}) {
       outDir: join(out, 'client'),
       rollupOptions: {
         input: {
-          app: join(root, ssrOptions.input as string),
+          app: join(root, input || 'index.html'),
         },
       },
     },
     mode: config.mode,
-  })
+  } as UserConfig)
 
   buildLog('Build for server...')
   await viteBuild({
     build: {
-      ssr: await getEntry(),
+      ssr: await getEntryPoint(config.ssrOptions || {}, config),
       outDir: join(out, 'server'),
       minify: false,
       cssCodeSplit: false,
       rollupOptions: {
-        output: format === 'esm'
-          ? {
-            entryFileNames: '[name].mjs',
-            format: 'esm',
-          }
-          : {
-            entryFileNames: '[name].cjs',
-            format: 'cjs',
-          },
+        output: {
+          entryFileNames: '[name].cjs',
+          format: 'cjs',
+        },
       },
     },
     mode: config.mode,
-  })
+  } as UserConfig)
 }

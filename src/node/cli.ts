@@ -3,7 +3,7 @@ import { bold, gray, red, reset, underline } from 'kolorist'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { bugs } from '../../package.json'
-import { start } from './server'
+import { startServer } from './server'
 import { build } from './build'
 
 yargs(hideBin(process.argv))
@@ -13,17 +13,13 @@ yargs(hideBin(process.argv))
     'build',
     'Build SSR',
     args => args,
-    async(args) => {
-      await build(args as any)
-    },
+    args => build(args as any),
   )
   .command(
     '*',
     'development and production environment',
     args => args,
-    async(args) => {
-      await start(args)
-    },
+    async args => (await startServer)(args),
   )
   .fail((msg, err, yargs) => {
     console.error(`\n${gray('[vite-ssr]')} ${bold(red('An internal error occurred.'))}`)

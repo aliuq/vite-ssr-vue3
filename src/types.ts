@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import type { ViteDevServer } from 'vite'
 import type { App } from 'vue'
 import type { RouteRecordRaw, Router, RouterOptions as VueRouterOptions } from 'vue-router'
 
@@ -78,9 +79,50 @@ export interface ViteSSRClientOptions {
   rootContainer?: string | Element
 }
 
+export interface CreateRenderOptions {
+  /**
+   * Enable production mode
+   *
+   * @default `false`
+   */
+  isProd?: boolean
+  /**
+   * Resolve the path of the index.html file,
+   * it works in  isProd's value is `false` or outDir's value is a relative path
+   *
+   * @default `process.cwd()`
+   */
+  root?: string
+  /**
+   * Build the output directory, only works in production mode
+   *
+   * @default `dist`
+   */
+  outDir?: string
+  context?: ViteSSRContext
+  viteServer?: ViteDevServer
+  ssrOptions?: ViteSSROptions
+}
+
+export interface RenderOptions {
+  context?: ViteSSRContext
+}
+
+export type CreateServerOptions = {
+  routePath?: string
+  createApp: (client: false, routePath?: string) => Promise<ViteSSRContext>
+} & CreateRenderOptions
+
 // extend vite.config.ts
 declare module 'vite' {
   interface UserConfig {
     ssrOptions?: ViteSSROptions
   }
+}
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var __ssr_start_time: number
+  // eslint-disable-next-line vars-on-top, no-var
+  var __ssr_ready_time: number
 }

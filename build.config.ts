@@ -4,6 +4,7 @@ export default defineBuildConfig({
   entries: [
     { input: 'src/index', name: 'index' },
     { input: 'src/node/cli', name: 'node/cli' },
+    { input: 'src/server/express', name: 'express' },
   ],
   clean: true,
   declaration: true,
@@ -12,6 +13,7 @@ export default defineBuildConfig({
     'vite',
     'vue/server-renderer',
     'vue/compiler-sfc',
+    'express-serve-static-core',
   ],
   rollup: {
     emitCJS: true,
