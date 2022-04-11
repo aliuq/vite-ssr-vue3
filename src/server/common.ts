@@ -23,6 +23,9 @@ function printInfo(server: Server, vite?: ViteDevServer | null) {
         vite?.config ? { clear: !vite.config.logger.hasWarned } : '',
       )
     }
+    catch (err) {
+      // TODO: Avoid error
+    }
     finally {
       info('\n  -- SSR mode \n')
 
