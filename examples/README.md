@@ -14,6 +14,7 @@ pnpm basic:dev
 pnpm basic:build
 pnpm basic:serve
 pnpm basic:serve:bin
+pnpm basic:serve:custom
 
 pnpm basic:build:noexternal
 pnpm basic:preview
@@ -23,6 +24,7 @@ pnpm vl-naive:dev
 pnpm vl-naive:build
 pnpm vl-naive:serve
 pnpm vl-naive:serve:bin
+pnpm vl-naive:serve:custom
 
 pnpm vl-naive:build:noexternal
 pnpm vl-naive:preview

@@ -7,6 +7,7 @@
     "build": "vite-ssr build",
     "serve": "vite-ssr --mode production",
     "serve:bin": "node ./bin/www",
+    "serve:custom": "node ./src/express",
     "build:noexternal": "vite-ssr build --config ./vite.config.noexternal.ts",
     "preview": "node ./dist/server/server.cjs"
   },
