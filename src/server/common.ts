@@ -13,28 +13,30 @@ function printInfo(server: Server, vite?: ViteDevServer | null) {
   const isAddressInfo = (x: any): x is AddressInfo => x?.address
   if (isAddressInfo(address)) {
     const ad = cyan(`http://localhost:${bold(address.port)}`)
+    try {
+      let msg = `\n  express v${require('express/package.json').version}`
+      if (vite?.config)
+        msg += `  +  vite v${require('vite/package.json').version}`
 
-    let msg = `\n  express v${require('express/package.json').version}`
-    if (vite?.config)
-      msg += `  +  vite v${require('vite/package.json').version}`
+      info(
+        cyan(msg),
+        vite?.config ? { clear: !vite.config.logger.hasWarned } : '',
+      )
+    }
+    finally {
+      info('\n  -- SSR mode \n')
 
-    info(
-      cyan(msg),
-      vite?.config ? { clear: !vite.config.logger.hasWarned } : '',
-    )
+      info(`  >  Running at:  ${ad}`)
 
-    info('\n  -- SSR mode \n')
+      if (vite?.config && vite.config.plugins.find(p => p.name.includes('unocss:inspector')))
+        info(`  >  Unocss:      ${ad}${cyan('/__unocss')}`)
 
-    info(`  >  Running at:  ${ad}`)
+      if (vite?.config && vite.config.plugins.find(p => p.name.includes('vite-plugin-inspect')))
+        info(`  >  Inspect:     ${ad}${cyan('/__inspect')}`)
 
-    if (vite?.config && vite.config.plugins.find(p => p.name.includes('unocss:inspector')))
-      info(`  >  Unocss:      ${ad}${cyan('/__unocss')}`)
-
-    if (vite?.config && vite.config.plugins.find(p => p.name.includes('vite-plugin-inspect')))
-      info(`  >  Inspect:     ${ad}${cyan('/__inspect')}`)
-
-    const time = Math.round(performance.now() - globalThis.__ssr_ready_time)
-    info(cyan(`\n  ready in ${time}ms.\n`))
+      const time = Math.round(performance.now() - globalThis.__ssr_ready_time)
+      info(cyan(`\n  ready in ${time}ms.\n`))
+    }
   }
 }
 
