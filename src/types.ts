@@ -1,9 +1,10 @@
 /* eslint-disable no-use-before-define */
-import type { ViteDevServer } from 'vite'
+import type { UserConfigExport, ViteDevServer } from 'vite'
 import type { App } from 'vue'
 import type { RouteRecordRaw, Router, RouterOptions as VueRouterOptions } from 'vue-router'
 
 type PartialKeys<T, Keys extends keyof T> = Omit<T, Keys> & Partial<Pick<T, Keys>>
+type OmitExcludeKey<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export interface ViteSSROptions {
   /**
@@ -37,6 +38,8 @@ export interface ViteSSROptions {
    * @see https://cn.vitejs.dev/config/#mode
    */
   mode?: 'development' | 'production'
+  clientConfig?: UserConfigExport
+  serverConfig?: UserConfigExport
 }
 
 interface RenderHtml {
@@ -64,7 +67,6 @@ export interface ViteSSRContext<HasRouter extends boolean = true> {
    * `undefined` on client side.
    */
   routePath?: string
-  render?: (url: string, manifest: any) => Promise<{ appHtml: string; preloadLinks: string }>
 }
 
 export type RouterOptions = PartialKeys<VueRouterOptions, 'history'> & { base?: string }

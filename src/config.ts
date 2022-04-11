@@ -1,6 +1,6 @@
 import path, { join as _join, resolve as _resolve } from 'path'
 import { resolveConfig } from 'vite'
-import type { ResolvedConfig } from 'vite'
+import type { InlineConfig, ResolvedConfig } from 'vite'
 import fs from 'fs-extra'
 
 import type { ViteSSROptions } from './types'
@@ -67,6 +67,6 @@ export async function getEntryPoint(
 }
 
 // Get all vite configurations
-export function resolveViteConfig(mode?: string) {
-  return resolveConfig({}, 'build', mode || process.env.MODE || process.env.NODE_ENV)
+export function resolveViteConfig(mode?: string, config: InlineConfig = {}) {
+  return resolveConfig(config, 'build', mode || process.env.MODE || process.env.NODE_ENV)
 }

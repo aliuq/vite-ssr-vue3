@@ -3,7 +3,7 @@ import type { Options } from 'tsup'
 export default <Options><unknown>{
   entryPoints: {
     'index': 'src/index.ts',
-    'express': 'src/server/express.ts',
+    'server': 'src/server/index.ts',
     'node/cli': 'src/node/cli.ts',
   },
   dts: true,

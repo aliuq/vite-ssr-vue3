@@ -4,7 +4,7 @@ export default defineBuildConfig({
   entries: [
     { input: 'src/index', name: 'index' },
     { input: 'src/node/cli', name: 'node/cli' },
-    { input: 'src/server/express', name: 'express' },
+    { input: 'src/server/index', name: 'server' },
   ],
   clean: true,
   declaration: true,

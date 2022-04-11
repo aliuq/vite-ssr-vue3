@@ -18,10 +18,10 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./express": {
-      "require": "./dist/express.cjs",
-      "import": "./dist/express.mjs",
-      "types": "./dist/express.d.ts"
+    "./server": {
+      "require": "./dist/server.cjs",
+      "import": "./dist/server.mjs",
+      "types": "./dist/server.d.ts"
     }
   },
   "files": [
@@ -33,17 +33,27 @@
     "vite-ssr": "./bin/vite-ssr.js"
   },
   "sideEffects": false,
+  "typesVersions": {
+    "*": {
+      "server": [
+        "dist/server.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "dev": "tsup --watch src --onSuccess",
     "build": "unbuild",
     "basic:dev": "pnpm dev \"pnpm -F basic dev\"",
     "basic:build": "pnpm build & pnpm -F basic build",
     "basic:serve": "pnpm basic:build & pnpm -F basic serve",
-    "basic:preview": "pnpm basic:build & pnpm -F basic preview",
+    "basic:serve:bin": "pnpm basic:build & pnpm -F basic serve:bin",
+    "basic:build:noexternal": "pnpm build & pnpm -F basic build:noexternal",
+    "basic:preview": "pnpm basic:build:noexternal & pnpm -F basic preview",
     "vl-naive:dev": "pnpm dev \"pnpm -F vitesse-lite-naive-ui dev\"",
     "vl-naive:build": "pnpm build & pnpm -F vitesse-lite-naive-ui build",
     "vl-naive:serve": "pnpm vl-naive:build & pnpm -F vitesse-lite-naive-ui serve",
-    "vl-naive:preview": "pnpm vl-naive:build & pnpm -F vitesse-lite-naive-ui preview",
+    "vl-naive:build:noexternal": "pnpm build & pnpm -F vitesse-lite-naive-ui build:noexternal",
+    "vl-naive:preview": "pnpm vl-naive:build:noexternal & pnpm -F vitesse-lite-naive-ui preview",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepublishOnly": "npm run build",

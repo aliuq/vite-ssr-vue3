@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires, no-console */
 import path from 'path'
+import { performance } from 'perf_hooks'
 import express from 'express'
 import type { CreateServerOptions, ViteSSRContext } from '../types'
 import { createRender } from '../node/render'
 import { createStartServer } from './common'
-const { performance } = require('perf_hooks')
 
 export async function createServer({
   createApp,

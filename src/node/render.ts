@@ -98,7 +98,7 @@ export async function createRender({
   return render
 }
 
-export async function renderPreloadLinks(modules: any, manifest: any) {
+async function renderPreloadLinks(modules: any, manifest: any) {
   let links = ''
   const seen = new Set()
   const { basename } = await import('path')

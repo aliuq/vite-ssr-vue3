@@ -37,7 +37,6 @@ export function ViteSSR(
       initialState: {},
       transformState,
       routePath,
-      render: undefined,
       onBeforePageRender: undefined,
       onPageRender: undefined,
     }
@@ -72,7 +71,6 @@ export function ViteSSR(
 
       await router.isReady()
       context.initialState = router.currentRoute.value.meta.state as Record<string, any> || {}
-      // context.render = createRender(app, context) as any
     }
 
     const initialState = context.initialState
