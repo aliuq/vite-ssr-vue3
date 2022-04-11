@@ -6,7 +6,9 @@
     "dev": "vite-ssr --port 3333",
     "build": "vite-ssr build",
     "serve": "vite-ssr --mode production",
-    "preview": "node ./bin/www"
+    "serve:bin": "node ./bin/www",
+    "build:noexternal": "vite-ssr build --config ./vite.config.noexternal.ts",
+    "preview": "node ./dist/server/server.cjs"
   },
   "dependencies": {
     "vue": "^3.2.25"
