@@ -7,7 +7,7 @@ cd vite-ssr-vue3
 
 # Install all project dependencies and build project
 pnpm install
-pnpm b
+pnpm build
 
 # Basic example
 pnpm basic:dev
