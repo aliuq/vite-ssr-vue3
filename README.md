@@ -182,7 +182,7 @@ Compiled with `vite-ssr build`, there are three ways to start the server:
 
     </details>
 
-I three ways, we need to strongly depend on the server, although we can use `ssr.noExternal` to package dependencies, but the server cannot be packaged in, you must install server package `npm install express`
+In the above three ways, we need to strongly depend on the server, although we can use `ssr.noExternal` to package dependencies, but the server cannot be packaged in, you must install server package `npm install express`
 
 we can modify the server building entry file to avoid this, create a new file to wrapper your server instance(*`vite-ssr` will not works*), configure `ssr.noExternal: /./` to package all dependencies. if you want to runing anywhere, this is recommended.
 
